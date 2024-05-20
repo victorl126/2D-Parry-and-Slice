@@ -5,7 +5,9 @@ import main.KeyHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.awt.image.*;
 
 public class Player extends Entity
 {
@@ -33,9 +35,10 @@ public class Player extends Entity
         {
             try
             {
-                attack = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK 1.png"));
-                idle = ImageIO.read(getClass().getResourceAsStream("/player/IDLE.png"));
-                run = ImageIO.read(getClass().getResourceAsStream("/player/RUN.png"));
+                attack = ImageIO.read(getClass().getResourceAsStream("player/ATTACK 1.png"));
+                idle = ImageIO.read(getClass().getResourceAsStream("player/IDLE.png"));
+                run_r = ImageIO.read(getClass().getResourceAsStream("player/RUN.png"));
+                run_l = ImageIO.read(getClass().getResourceAsStream("player/RUN_LEFT.png"));
 
             }catch(IOException e)
             {
@@ -48,7 +51,7 @@ public class Player extends Entity
             if(keyH.leftPressed)
             {
                 direction = "left";
-                x -= speed;
+                x -= 2;
             }
             else if (keyH.rightPressed)
             {
@@ -64,5 +67,16 @@ public class Player extends Entity
 //          g2.fillRect(x, y, gp.tileSize, gp.tileSize * 3);
 
             BufferedImage image = null;
+
+            switch(direction)
+            {
+                case "right":
+                    image = run_r;
+                    break;
+                case "left":
+                    image = run_l;
+                    break;
+            }
+            g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
         }
 }
