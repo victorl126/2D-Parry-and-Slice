@@ -35,10 +35,10 @@ public class Player extends Entity
         {
             try
             {
-                attack = ImageIO.read(getClass().getResourceAsStream("player/ATTACK 1.png"));
-                idle = ImageIO.read(getClass().getResourceAsStream("player/IDLE.png"));
-                run_r = ImageIO.read(getClass().getResourceAsStream("player/RUN.png"));
-                run_l = ImageIO.read(getClass().getResourceAsStream("player/RUN_LEFT.png"));
+                attack = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK 1.png"));
+                idle = ImageIO.read(getClass().getResourceAsStream("/player/IDLE.png"));
+                run_r = ImageIO.read(getClass().getResourceAsStream("/player/RUN.png"));
+                run_l = ImageIO.read(getClass().getResourceAsStream("/player/RUN_LEFT.png"));
 
             }catch(IOException e)
             {
@@ -58,6 +58,10 @@ public class Player extends Entity
                 direction = "right";
                 x += speed;
             }
+            else
+            {
+                direction = null;
+            }
         }
 
         public void draw(Graphics2D g2)
@@ -70,6 +74,9 @@ public class Player extends Entity
 
             switch(direction)
             {
+                case null:
+                    image = idle;
+                    break;
                 case "right":
                     image = run_r;
                     break;
