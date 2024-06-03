@@ -2,6 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,21 +15,34 @@ public class Player extends Entity
         GamePanel gp;
         KeyHandler keyH;
 
+
         public Player(GamePanel gp, KeyHandler keyH)
         {
             this.gp = gp;
             this.keyH = keyH;
 
+            solidArea = new Rectangle();
+            solidArea.x = 33;
+            solidArea.y = 66;
+            solidAreaDefaultX = solidArea.x;
+            solidAreaDefaultY = solidArea.y;
+            solidArea.width = 134;
+            solidArea.height = 334;
+
             setDefaultValues();
             getPlayerImage();
+
         }
 
         public void setDefaultValues ()
         {
-            x = 100;
-            y = 100;
+            worldX = 0;
+            worldY = 350;
             speed = 2;
             direction = "right";
+
+            maxLife = 10;
+            life = maxLife;
         }
 
         public void getPlayerImage()
@@ -36,7 +50,11 @@ public class Player extends Entity
             try
             {
                 attack = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK 1.png"));
-                idle = ImageIO.read(getClass().getResourceAsStream("/player/IDLE.png"));
+                idle1 = ImageIO.read(getClass().getResourceAsStream("/player/idle1.png"));
+                idle2 = ImageIO.read(getClass().getResourceAsStream("/player/idle2.png"));
+                idle3 = ImageIO.read(getClass().getResourceAsStream("/player/idle3.png"));
+                idle4 = ImageIO.read(getClass().getResourceAsStream("/player/idle4.png"));
+                idle5 = ImageIO.read(getClass().getResourceAsStream("/player/idle5.png"));
                 run_r1 = ImageIO.read(getClass().getResourceAsStream("/player/run_right_1.png"));
                 run_r2 = ImageIO.read(getClass().getResourceAsStream("/player/run_right_2.png"));
                 run_r3 = ImageIO.read(getClass().getResourceAsStream("/player/run_right_3.png"));
@@ -71,13 +89,25 @@ public class Player extends Entity
             if(keyH.leftPressed)
             {
                 direction = "left";
-                x -= 2;
+                if (worldX > -55)
+                {
+                    worldX -= speed;
+                }
             }
             else if (keyH.rightPressed)
             {
                 direction = "right";
-                x += speed;
+                if (worldX < 625)
+                {
+                    worldX += speed;
+                }
             }
+            else
+            {
+                direction = "none";
+            }
+
+            // int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
 
             spriteCounter++;
             if(spriteCounter > 10)
@@ -120,10 +150,6 @@ public class Player extends Entity
 
         public void draw(Graphics2D g2)
         {
-//          g2.setColor(Color.white);
-//
-//          g2.fillRect(x, y, gp.tileSize, gp.tileSize * 3);
-
             BufferedImage image = null;
 
             switch(direction)
@@ -196,7 +222,40 @@ public class Player extends Entity
                         image = run_l8;
                     }
                     break;
+                case "none":
+                    if (spriteNum == 1)
+                    {
+                        image = idle1;
+                    }
+                    if (spriteNum == 2)
+                    {
+                        image = idle2;
+                    }
+                    if (spriteNum == 3)
+                    {
+                        image = idle3;
+                    }
+                    if (spriteNum == 4)
+                    {
+                        image = idle4;
+                    }
+                    if (spriteNum == 5)
+                    {
+                        image = idle5;
+                    }
+                    if (spriteNum == 6)
+                    {
+                        image = idle1;
+                    }
+                    if (spriteNum == 7)
+                    {
+                        image = idle2;
+                    }
+                    if (spriteNum == 8)
+                    {
+                        image = idle5;
+                    }
             }
-            g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image, worldX, 190, 200, 400, null);
         }
 }

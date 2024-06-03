@@ -1,6 +1,8 @@
 package main;
 
 
+import enemy.Ninja;
+import entity.Entity;
 import entity.Player;
 
 import javax.swing.JPanel;
@@ -20,14 +22,20 @@ public class GamePanel extends JPanel implements Runnable
 
     int FPS = 60;
 
-    KeyHandler keyH = new KeyHandler();
+    KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
-    Player player = new Player(this, keyH);
+    public CollisionChecker cChecker = new CollisionChecker(this);
+    public AssetSetter aSetter = new AssetSetter(this);
+    public Player player = new Player(this, keyH);
 
-    // set player's default pos
-    int playerX = 100;
-    int playerY = 300;
-    int playerSpeed = 2;
+    public UI ui = new UI(this);
+
+    public Ninja[] monster = new Ninja[2];
+
+    public int gameState;
+    public final int titleState = 0;
+    public final int playState = 1;
+    public final int pauseState = 2;
 
     public GamePanel()
     {
@@ -36,6 +44,12 @@ public class GamePanel extends JPanel implements Runnable
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+    }
+
+    public void setupGame()
+    {
+        aSetter.setMonster();
+        gameState = titleState;
     }
 
     public void startGameThread()
@@ -81,16 +95,35 @@ public class GamePanel extends JPanel implements Runnable
 
     public void update()
     {
-        player.update();
+        if (gameState == playState)
+        {
+            player.update();
+
+            monster[0].update();
+        }
+        if (gameState == pauseState)
+        {
+            //nothing
+        }
     }
     public void paintComponent (Graphics g)
     {
         super.paintComponent(g);
-
-
         Graphics2D g2 = (Graphics2D)g;
 
-        player.draw(g2);
+        if (gameState == titleState)
+        {
+            ui.draw(g2);
+        }
+        else
+        {
+            player.draw(g2);
+
+            ui.draw(g2);
+
+            monster[0].draw(g2);
+        }
+
 
         g2.dispose();
     }
