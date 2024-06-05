@@ -1,13 +1,14 @@
 package main;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import entity.Entity;
+
+import java.awt.event.*;
 import java.security.Key;
 
-public class KeyHandler implements KeyListener
+public class KeyHandler extends Entity implements KeyListener
 {
     GamePanel gp;
-    public boolean leftPressed, rightPressed;
+    public boolean leftPressed, rightPressed, qPressed, spacePressed;
 
     public KeyHandler (GamePanel gp)
     {
@@ -30,15 +31,31 @@ public class KeyHandler implements KeyListener
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP)
             {
                 gp.ui.commandNum--;
-                if (gp.ui.commandNum < 0)
+                if (gp.ui.commandNum == -1)
+                {
+                    gp.ui.commandNum = 2;
+                }
+                if (gp.ui.commandNum == 1)
                 {
                     gp.ui.commandNum = 1;
+                }
+                if (gp.ui.commandNum == 0)
+                {
+                    gp.ui.commandNum = 0;
                 }
             }
             if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN)
             {
                 gp.ui.commandNum++;
-                if (gp.ui.commandNum > 1)
+                if (gp.ui.commandNum == 1)
+                {
+                    gp.ui.commandNum = 1;
+                }
+                if (gp.ui.commandNum == 2)
+                {
+                    gp.ui.commandNum = 2;
+                }
+                if (gp.ui.commandNum == 3)
                 {
                     gp.ui.commandNum = 0;
                 }
@@ -50,6 +67,10 @@ public class KeyHandler implements KeyListener
                     gp.gameState = gp.playState;
                 }
                 if (gp.ui.commandNum == 1)
+                {
+                    gp.gameState = gp.settingsState;
+                }
+                if (gp.ui.commandNum == 2)
                 {
                     System.exit(0);
                 }
@@ -65,6 +86,14 @@ public class KeyHandler implements KeyListener
             {
                 rightPressed = true;
             }
+            if (code == KeyEvent.VK_Q)
+            {
+                qPressed = true;
+            }
+            if (code == KeyEvent.VK_SPACE)
+            {
+                spacePressed = true;
+            }
             if (code == KeyEvent.VK_ESCAPE)
             {
                 if (gp.gameState == gp.playState)
@@ -77,20 +106,73 @@ public class KeyHandler implements KeyListener
                 }
             }
         }
-
+        if (gp.gameState == gp.settingsState)
+        {
+            if(code == KeyEvent.VK_ESCAPE)
+            {
+                gp.gameState = gp.titleState;
+            }
+        }
+        if (gp.gameState == gp.endState)
+        {
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP)
+            {
+                gp.ui.commandNum--;
+                if (gp.ui.commandNum == -1)
+                {
+                    gp.ui.commandNum = 1;
+                }
+                if (gp.ui.commandNum == 0)
+                {
+                    gp.ui.commandNum = 0;
+                }
+            }
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN)
+            {
+                gp.ui.commandNum++;
+                if (gp.ui.commandNum == 1)
+                {
+                    gp.ui.commandNum = 1;
+                }
+                if (gp.ui.commandNum == 2)
+                {
+                    gp.ui.commandNum = 0;
+                }
+            }
+            if (code == KeyEvent.VK_ENTER)
+            {
+                if (gp.ui.commandNum == 0)
+                {
+                    gp.gameState = gp.titleState;
+                    gp.retry();
+                }
+                else if (gp.ui.commandNum == 1)
+                {
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e)
     {
         int code = e.getKeyCode();
-        if (code == KeyEvent.VK_A)
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT)
         {
             leftPressed = false;
         }
-        if (code == KeyEvent.VK_D)
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT)
         {
             rightPressed = false;
+        }
+        if (code == KeyEvent.VK_Q)
+        {
+            qPressed = false;
+        }
+        if (code == KeyEvent.VK_SPACE)
+        {
+            spacePressed = false;
         }
     }
 }

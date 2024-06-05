@@ -10,16 +10,75 @@ public class CollisionChecker
         this.gp = gp;
     }
 
-    public void checkTile (Entity entity)
+    public int checkEntity (Entity entity, Entity[] target)
     {
-        int entityLeftWorldX = entity.worldX + entity.solidArea.x;
-        int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
-        int entityTopWorldY = entity.worldY + entity.solidArea.y;
-        int entityBottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
+        int index = 999;
 
-        int entityLeftCol = entityLeftWorldX/gp.tileSize;
-        int entityRightCol = entityRightWorldX/gp.tileSize;
-        int entityTopRow = entityTopWorldY/gp.tileSize;
-        int entityBottomRow = entityBottomWorldY/gp.tileSize;
+        for (int i = 0; i < target.length; i++)
+        {
+            if (target[i] != null)
+            {
+                entity.solidArea.x = entity.worldX;
+                entity.solidArea.y = entity.worldY;
+
+                target[i].solidArea.x = target[i].worldX;
+                target[i].solidArea.y = target[i].worldY;
+
+                switch(entity.direction)
+                {
+                    case "left":
+                        if (entity.worldX > gp.player.worldX)
+                        {
+                            entity.solidArea.x -= entity.speed;
+                        }
+                    case "right":
+                        entity.solidArea.x += entity.speed;
+
+                }
+
+                if(entity.solidArea.intersects(target[i].solidArea))
+                {
+                    if (target[i] != entity)
+                    {
+                        entity.collisionOn = true;
+                        index = i;
+                    }
+
+                }
+            }
+        }
+        return index;
+    }
+    public int checkEntity (Entity entity, Entity[] target, int i)
+    {
+        int index = 999;
+
+        if (target[i] != null) {
+            entity.solidArea.x = entity.worldX;
+            entity.solidArea.y = entity.worldY;
+
+            target[i].solidArea.x = target[i].worldX;
+            target[i].solidArea.y = target[i].worldY;
+
+            switch (entity.direction) {
+                case "left":
+                    if (entity.worldX > gp.player.worldX) {
+                        entity.solidArea.x -= entity.speed;
+                    }
+                case "right":
+                    entity.solidArea.x += entity.speed;
+
+            }
+
+            if (entity.solidArea.intersects(target[i].solidArea)) {
+                if (target[i] != entity) {
+                    entity.collisionOn = true;
+                    index = i;
+                }
+
+            }
+        }
+
+        return index;
     }
 }

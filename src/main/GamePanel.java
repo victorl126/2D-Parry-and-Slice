@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable
 
     int FPS = 60;
 
-    KeyHandler keyH = new KeyHandler(this);
+    public KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
@@ -30,12 +30,15 @@ public class GamePanel extends JPanel implements Runnable
 
     public UI ui = new UI(this);
 
-    public Ninja[] monster = new Ninja[2];
+    public Entity[] monster = new Entity[2];
+
 
     public int gameState;
     public final int titleState = 0;
     public final int playState = 1;
     public final int pauseState = 2;
+    public final int endState = 3;
+    public final int settingsState = 4;
 
     public GamePanel()
     {
@@ -49,7 +52,15 @@ public class GamePanel extends JPanel implements Runnable
     public void setupGame()
     {
         aSetter.setMonster();
+        monster[1] = player;
         gameState = titleState;
+    }
+
+    public void retry()
+    {
+        player.setDefault();
+        player.respawn();
+        aSetter.setMonster();
     }
 
     public void startGameThread()
@@ -98,12 +109,34 @@ public class GamePanel extends JPanel implements Runnable
         if (gameState == playState)
         {
             player.update();
-
-            monster[0].update();
+            if (monster[0] != null) {
+                if (monster[0].alive && !monster[0].dying) {
+                    monster[0].update();
+                }
+                if (!monster[0].alive) {
+                    monster[0] = null;
+                }
+            }
         }
         if (gameState == pauseState)
         {
             //nothing
+        }
+        if (gameState == endState)
+        {
+            player.update();
+            if (monster[0] != null) {
+                if (monster[0].alive && !monster[0].dying) {
+                    monster[0].update();
+                }
+                if (!monster[0].alive) {
+                    monster[0] = null;
+                }
+            }
+        }
+        if (gameState == settingsState)
+        {
+
         }
     }
     public void paintComponent (Graphics g)
@@ -115,16 +148,34 @@ public class GamePanel extends JPanel implements Runnable
         {
             ui.draw(g2);
         }
-        else
+        else if (gameState == playState || gameState == pauseState)
         {
             player.draw(g2);
 
             ui.draw(g2);
 
-            monster[0].draw(g2);
+            if(monster[0] != null)
+            {
+                monster[0].draw(g2);
+            }
         }
+        else if (gameState == endState)
+        {
+            if (player.life > 0)
+            {
+                player.draw(g2);
 
-
+                ui.draw(g2);
+            }
+            else
+            {
+                ui.draw(g2);
+            }
+        }
+        else if (gameState == settingsState)
+        {
+            ui.draw(g2);
+        }
         g2.dispose();
     }
 }
