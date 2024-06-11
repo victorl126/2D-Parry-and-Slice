@@ -1,6 +1,11 @@
 package main;
 
 import javax.swing.*;
+
+// CREDITS
+// CODE: RyiSnow on YouTube
+// Sprites: Mattz Art and LuizMelo on itch.io
+
 public class Main
 {
     public static void main(String[] args)
